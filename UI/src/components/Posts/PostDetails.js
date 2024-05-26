@@ -17,17 +17,67 @@ const PostDetails = (props) => {
   }
 
   return (
-    <div>
-      <h2>{post.title}</h2>
-      <div className="leading-tight whitespace-pre-wrap" dangerouslySetInnerHTML={{
-        __html: post.content.substr(0, 100).replace(
-          /(<? *script)/gi,
-          "illegalscript"
-        ),
-      }}></div>
-      <p>Author: {checkValueEmptyOrNull(post.authorName)}</p>
-      <p>Category: {checkValueEmptyOrNull(post.categoryName)}</p>
-    </div>
+    <Container className="h-100 py-4">
+
+      <div>
+        <h2>{post.title}</h2>
+      </div>
+
+      <div class="row">
+        <div className='col-12 col-lg-9 d-flex justify-content-between'>
+          <div>
+            Published on {new Date(post.createdAt).toLocaleString()}
+          </div>
+          <div>
+            Category: {checkValueEmptyOrNull(post.categoryName)}
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-9 my-4">
+          <img className='w-100' style={{ height: 'auto' }} src="https://th.bing.com/th/id/OIP.au547IWsqSQUkUwyd7LHZAHaEK?rs=1&pid=ImgDetMain" />
+        </div>
+
+        <div class="col-12 col-lg-3 h-25 my-3">
+          <div className='mb-2 fw-bold'>
+            ABOUT THE AUTHOR
+          </div>
+          {
+            post.authorName ?
+              <div class="row rounded shadow">
+                <div class="col-lg-4">
+                  <div style={{ width: '75px', height: '75px' }} className='bg-primary rounded-pill m-3 d-flex justify-content-center align-items-center'>
+
+                    <span className='text-center text-white fs-1 fw-bold align-middle text-nowrap'>
+                      {post.authorName ? post.authorName.split(' ')[0][0] + '' + post.authorName.split(' ')[1][0] : ''}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="col-lg-8 py-2">
+                  <div className='d-flex justify-content-start fs-5'>
+                    {post.authorName}
+                  </div>
+                </div>
+              </div>
+              :
+              <div class="row rounded shadow py-4">
+                <span>There is no author for this post</span>
+              </div>
+          }
+
+        </div>
+      </div>
+
+      <div>
+        <div className="leading-tight whitespace-pre-wrap" dangerouslySetInnerHTML={{
+          __html: post.content.substr(0, 100).replace(
+            /(<? *script)/gi,
+            "illegalscript"
+          ),
+        }}>
+        </div>
+      </div>
+    </Container>
   );
 };
 

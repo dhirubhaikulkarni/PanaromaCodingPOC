@@ -16,9 +16,9 @@ const Dashboard = () => {
   }
 
   return (
-    <Container fluid>
-      <Row>
-        <Col xs={2} className="bg-light sidebar">
+    <Container fluid className="h-100">
+      <Row className='h-100'>
+        <Col xs={2} className="bg-light sidebar shadow py-3">
           <Nav className="flex-column">
             <Nav.Link as={Link} to="/dashboard/posts">
               <FaList /> All Posts
@@ -38,6 +38,7 @@ const Dashboard = () => {
           <Routes>
           <Route path="posts" element={<AllPosts />} />
             <Route path="add-post" element={<NewPost />} />
+            <Route path="add-post/:postId" element={<NewPost />} />
             <Route path="category" element={<Category />} />
             <Route path="profile" element={<Profile />} />
           </Routes>

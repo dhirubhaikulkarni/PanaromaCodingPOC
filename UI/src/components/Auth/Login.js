@@ -25,7 +25,8 @@ const Login = () => {
         setError(response.data.error.message);
       } else {
         console.log("set user");
-        localStorage.setItem('user', JSON.stringify(response.data));
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        localStorage.setItem('jwt_token', JSON.stringify(response.data.token));
         //dispatch(SetUser(response.data));
         setError(null);
         navigate('/dashboard');

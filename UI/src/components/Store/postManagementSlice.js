@@ -54,6 +54,34 @@ export const addPost = (title, content, selectedCategory) => async dispatch => {
 };
 
 
+export const updatePost = (postId, title, content, selectedCategory) => async dispatch => {
+  try {
+    dispatch(setLoading(true));
+    await axios.put(`http://localhost:4000/api/posts/editPost/${postId}`, {
+      title,
+      content,
+      selectedCategory
+    })
+      .then(response => {
+        if (response.status === 200) {
+          dispatch(setLoading(false));
+          dispatch(setSuccess('Post updated successfully!'));
+          const timer = setTimeout(() => {
+            dispatch(setSuccess(null));
+          }, 1000);
+          // Clear timeout if the component is unmounted
+          return () => clearTimeout(timer);
+        }
+      }).catch((error) => {
+        dispatch(setLoading(false));
+        dispatch(setError('Failed to Update Post.'));
+      });
+  } catch (error) {
+    dispatch(setLoading(false));
+    dispatch(setError('Failed to Update Post.'));
+  }
+};
+
 
 const initialState = {
   data: [],

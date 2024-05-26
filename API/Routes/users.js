@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const ObjectID = require('mongodb').ObjectId;
+const jwt = require("jsonwebtoken");
 
 const checkValueEmptyOrNull = (value) => {
     return (value === undefined || value === null || value === "" || value === "NULL" || value === "null") ? false : true;
@@ -72,10 +73,10 @@ router.post("/userEdit", async (req, res) => {
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
         const users = await db.collection("Users");
-        
+
         // Validate Request
         if (!req.body) {
-            return res.status(400).send(JSON.stringify({ message: "Data Can not be Empty"}));
+            return res.status(400).send(JSON.stringify({ message: "Data Can not be Empty" }));
         }
 
         await users.updateOne({ _id: new ObjectID(req.body._id) },
@@ -83,31 +84,27 @@ router.post("/userEdit", async (req, res) => {
                 $set: {
                     firstName: req.body.firstName,
                     lastName: req.body.lastName,
-                    role:req.body.role,
+                    role: req.body.role,
                     updatedAt: new Date()
-                    
+
                 }
             })
 
 
         let newData = await users.findOne({ _id: new ObjectID(req.body._id) })
-        return res.status(200).send(JSON.stringify({ newData, "message": "User Updated Successfully"}));
-        
+        return res.status(200).send(JSON.stringify({ newData, "message": "User Updated Successfully" }));
+
     } catch (error) {
         res.status(500).send("Failed");
     }
 });
 router.post("/login", async (req, res) => {
     try {
-        console.log("login call");
-
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
         const users = await db.collection("Users");
 
         const user = await users.findOne({ email: req.body.email });
-        console.log(user);
-
         if (!checkValueEmptyOrNull(user)) {
             return res.status(200).send({ error: { code: "Failed", message: "Incorrect credentials" } });
         }
@@ -117,7 +114,26 @@ router.post("/login", async (req, res) => {
             return res.status(200).send({ error: { code: "Failed", message: "Incorrect credentials" } });
         }
 
-        res.status(200).send(user); // Send the user data on successful login
+        const token = jwt.sign({
+            id: user._id,
+            role: user.role,
+            email: user.email,
+            username: user.username
+
+        },
+            process.env.JWT_PRIVATEKEY,
+            {
+                // expiresIn: "120s", // expires in 365 days
+                expiresIn: process.env.JWT_EXPIRESIN
+                //expiresIn: "4h"
+            }
+        );
+
+        let userData = {
+            user,
+            token
+        }
+        res.status(200).send(userData); // Send the user data on successful login
     } catch (error) {
         console.error(error);
         res.status(500).send("Failed");
@@ -126,12 +142,6 @@ router.post("/login", async (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        // const salt = await bcrypt.genSalt(10);
-        // const hashPassword = await bcrypt.hash("Pass@123", salt);
-        // const compare = await bcrypt.compare(hashPassword, "$2a$10$YucTuYBmvQ2vo5hN9VG4te1ex8HW/U96tT9XrKyJ8u1lM8QO0i44e")
-
-        // console.log(hashPassword);
-        // console.log("compaior: " + compare);
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
         const users = await db.collection("Users");

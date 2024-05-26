@@ -21,7 +21,9 @@
     "express": "^4.17.1",
     "express-locale": "^2.0.0",
     "mongodb": "^6.5.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

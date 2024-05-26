@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
+const { Authentication } = require("../Authentication/Authentication");
 const ObjectID = require('mongodb').ObjectId;
 
 const checkValueEmptyOrNull = (value) => {
@@ -27,36 +28,42 @@ router.post("/addPost", async (req, res) => {
         res.status(500).send("Failed");
     }
 });
-router.post("/editPost", async (req, res) => {
+router.put("/editPost/:id", async (req, res) => {  
     try {
+        console.log("edit called",req.body);
+
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
-        const Posts = await db.collection("Posts");
+        const Posts = db.collection("Posts");
+
+        const { id } = req.params;  // Get postId from URL
+        const { title, content, selectedCategory } = req.body;
 
         // Validate Request
-        if (!req.body) {
-            return res.status(400).send(JSON.stringify({ message: "Data Can not be Empty" }));
+        if (!title || !content || !selectedCategory) {
+            return res.status(400).send({ message: "All fields are required" });
         }
 
-        await Posts.updateOne({ _id: new ObjectID(req.body._id) },
+        const postId = new ObjectID(id);
+        await Posts.updateOne(
+            { _id: postId },
             {
                 $set: {
-                    title: req.body.title,
-                    content: req.body.content,
-                    author: new ObjectID(req.body.author),
-                    categoryId: new ObjectID(req.body.categoryId),
-                    updatedAt: new Date()
+                    title,
+                    content,
+                    category: new ObjectID(selectedCategory),
+                    updatedAt: new Date(),
+                },
+            }
+        );
 
-                }
-            })
+        const updatedPost = await Posts.findOne({ _id: postId });
 
-
-        let newData = await Posts.findOne({ _id: new ObjectID(req.body._id) })
-
-        return res.status(200).send(JSON.stringify({ newData, "message": "User Updated Successfully" }));
+        return res.status(200).send({ newData: updatedPost, message: "Post Updated Successfully" });
 
     } catch (error) {
-        res.status(500).send("Failed");
+        console.error("Error updating post:", error);
+        res.status(500).send({ message: "Failed to update post" });
     }
 });
 
@@ -95,12 +102,12 @@ router.get("/", async (req, res) => {
                     authorName: { $concat: ["$authorDetails.firstName", " ", "$authorDetails.lastName"] },
                     categoryName: "$categoryDetails.name",
                     author: 1,
-                    category:1,
+                    category: 1,
                     createdAt: 1,
                     updatedAt: 1
                 }
             }
-        ]).sort({_id:-1}).toArray();
+        ]).sort({ _id: -1 }).toArray();
         if (aggregatedPosts != null) {
             res.status(200).send(JSON.stringify(aggregatedPosts));
         }

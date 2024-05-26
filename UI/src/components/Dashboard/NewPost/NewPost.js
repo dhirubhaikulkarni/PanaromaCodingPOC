@@ -1,63 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Spinner, Container, Row, Col } from 'react-bootstrap';
-import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addPost, getCategories } from '../../Store/postManagementSlice';
+import { addPost, updatePost, getCategories, getPosts } from '../../Store/postManagementSlice';
 
 const NewPost = () => {
+  const { postId } = useParams();  // Get postId from route params
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  // const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [author, setAuthor] = useState('');
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(null);
-  // const [success, setSuccess] = useState(null);
   const categories = useSelector(state => state.post.categories);
+  const posts = useSelector(state => state.post.data);
 
-  const loading = useSelector((state) => state.post.loading);
-  const error = useSelector((state) => state.post.error);
-  const success = useSelector((state) => state.post.success);
+  const loading = useSelector(state => state.post.loading);
+  const error = useSelector(state => state.post.error);
+  const success = useSelector(state => state.post.success);
 
   useEffect(() => {
-    try {
-      dispatch(getCategories())
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-    // Retrieve user information from local storage
+    dispatch(getCategories());
+
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
       setAuthor(user.username);
     }
-  }, []);
+
+    if (postId && posts.length > 0) {
+      const post = posts.find(post => post._id === postId);
+      console.log("post", post);
+      if (post) {
+        setTitle(post.title);
+        setContent(post.content);
+        setSelectedCategory(post.category);
+      }
+    }
+  }, [dispatch, postId, posts]);
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategory(categoryId);
   };
 
   const handleSubmit = async (e) => {
+    debugger;
     e.preventDefault();
-    dispatch(addPost(title, content, selectedCategory))
-    clearAll()
-
+    if (postId) {
+      debugger;
+      dispatch(updatePost(postId, title, content, selectedCategory));
+      dispatch(getPosts()); 
+    } else {
+      dispatch(addPost(title, content, selectedCategory));
+      dispatch(getPosts()); 
+    }
   };
-
-  const clearAll = () => {
-    setTitle('');
-    setContent('');
-    setSelectedCategory('');
-  };
-
 
   return (
     <Container className="mt-4">
       <Row>
         <Col>
-          <h2>Add New Post</h2>
+          <h2>{postId ? 'Edit Post' : 'Add New Post'}</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           {success && <Alert variant="success">{success}</Alert>}
           <Form onSubmit={handleSubmit}>
@@ -137,7 +140,7 @@ const NewPost = () => {
             </Form.Group>
 
             <Button variant="primary" type="submit" disabled={loading}>
-              {loading ? <Spinner animation="border" size="sm" /> : 'Add Post'}
+              {loading ? <Spinner animation="border" size="sm" /> : postId ? 'Update Post' : 'Add Post'}
             </Button>
           </Form>
         </Col>

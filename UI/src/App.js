@@ -19,12 +19,43 @@ function App() {
   const [loading, setLoading] = useState(true);
 
 
+  axios.interceptors.request.use((req) => {
+    debugger;
+    console.log("Api call",localStorage.getItem('jwt_token'))
+    req.headers['Authorization'] = `Bearer ${localStorage.getItem('jwt_token')}`;
+    req.headers['Content-Type'] = 'application/json';
+    return req;
+  });
+  
+  
+  axios.interceptors.response.use(response => {
+    console.log("Response Call")
+    if (localStorage.getItem('jwt_token') !== null && localStorage.getItem('jwt_token') !== undefined) {
+      if (response.headers.hasOwnProperty("authorization")) {
+        const validToken = response.headers.authorization;
+        if (validToken !== 'NaN' && validToken !== null && validToken !== undefined) {
+          const newToken = response.headers.authorization.replace('Bearer', '').trim();
+          if (localStorage.getItem('jwt_token') !== newToken) {
+            localStorage.setItem('jwt_token', newToken);
+          }
+        }
+      }
+    }
+    return response;
+  
+  }, error => {
+    if (error.response.status === 401) {
+      // window.location = `${window.location.origin}`;
+  
+    }
+    return error;
+  });
 
 
   return (
     <Provider store={rootReducers}>
       <Router>
-        <div className="App">
+        <div className="App" style={{height:'100%'}}>
           <Header />
 
           <Routes>
@@ -35,7 +66,7 @@ function App() {
             <Route path="/dashboard/*" element={<Dashboard />} />
           </Routes>
 
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </Router>
     </Provider>
