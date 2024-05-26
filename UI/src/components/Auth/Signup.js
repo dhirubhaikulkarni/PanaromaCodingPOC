@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import { Form, Button, Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { registerUser, setError, setLoading } from '../Store/loginSlice';
+import { useSelector, useDispatch } from 'react-redux';
+
 
 const Signup = () => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  const loading = useSelector((state) => state.login.loading);
+  const error = useSelector((state) => state.login.error);
+  const success = useSelector((state) => state.login.success);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,26 +27,8 @@ const Signup = () => {
       setLoading(false);
       return;
     }
-    try {
-      const response = await axios.post('http://localhost:4000/api/users/register', {
-        username,
-        email,
-        password,
-        firstName,
-        lastName,
-      });
-      if (response.status === 200) {
-        setSuccess('User registered successfully!');
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        setError(error.response.data.message || 'Email or username is already taken.');
-      } else {
-        setError('Failed to register user.');
-      }
-    } finally {
-      setLoading(false);
-    }
+
+    dispatch(registerUser(username,email,password,firstName,lastName))
   };
 
   return (

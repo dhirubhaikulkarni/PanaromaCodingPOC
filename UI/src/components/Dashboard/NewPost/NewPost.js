@@ -3,29 +3,31 @@ import { Form, Button, Alert, Spinner, Container, Row, Col } from 'react-bootstr
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { addPost, getCategories } from '../../Store/postManagementSlice';
 
 const NewPost = () => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [author, setAuthor] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(null);
+  // const [success, setSuccess] = useState(null);
+  const categories = useSelector(state => state.post.categories);
+
+  const loading = useSelector((state) => state.post.loading);
+  const error = useSelector((state) => state.post.error);
+  const success = useSelector((state) => state.post.success);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get('http://localhost:4000/api/categories');
-        const activeCategories = response.data.filter(category => category.isActive);
-        setCategories(activeCategories);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-    fetchCategories();
-
+    try {
+      dispatch(getCategories())
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
     // Retrieve user information from local storage
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
@@ -39,27 +41,16 @@ const NewPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-    try {
-      const response = await axios.post('http://localhost:4000/api/posts/addPost', {
-        title,
-        content,
-        author: JSON.parse(localStorage.getItem('user'))._id, 
-        categoryId: selectedCategory, 
-      });
-      if (response.status === 200) {
-        setSuccess('Post added successfully!');
-        setTitle('');
-        setContent('');
-        setSelectedCategory('');
-      }
-    } catch (error) {
-      setError('Failed to add post.');
-    }
-    setLoading(false);
-};
+    dispatch(addPost(title, content, selectedCategory))
+    clearAll()
+
+  };
+
+  const clearAll = () => {
+    setTitle('');
+    setContent('');
+    setSelectedCategory('');
+  };
 
 
   return (

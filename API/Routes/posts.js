@@ -100,7 +100,7 @@ router.get("/", async (req, res) => {
                     updatedAt: 1
                 }
             }
-        ]).toArray();
+        ]).sort({_id:-1}).toArray();
         if (aggregatedPosts != null) {
             res.status(200).send(JSON.stringify(aggregatedPosts));
         }

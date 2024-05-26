@@ -2,6 +2,10 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { checkValueEmptyOrNull } from '../../Utils/utils';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
 
 const PostDetails = (props) => {
   const { id } = useParams();
@@ -21,10 +25,10 @@ const PostDetails = (props) => {
           "illegalscript"
         ),
       }}></div>
-        <p>Author: {checkValueEmptyOrNull(post.authorName)}</p>
-        <p>Category: {checkValueEmptyOrNull(post.categoryName)}</p>
-      </div>
-      );
+      <p>Author: {checkValueEmptyOrNull(post.authorName)}</p>
+      <p>Category: {checkValueEmptyOrNull(post.categoryName)}</p>
+    </div>
+  );
 };
 
-      export default PostDetails;
+export default PostDetails;

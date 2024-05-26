@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import axios from 'axios';
 import { getPosts } from '../../Store/postManagementSlice';
+import '../AllPosts/AllPost.css';
 
 const AllPosts = () => {
   const dispatch = useDispatch();
@@ -29,45 +30,54 @@ const AllPosts = () => {
   const filteredPosts = user.role === 'admin' ? posts : posts.filter(post => post.author === user._id);
 
   return (
-    <Container className="mt-5">
+    <Container className="pt-4">
+
       <Row>
         {filteredPosts.map((post) => (
-          <Col key={post._id} md={12} className="mb-4">
-            <Card className="d-flex flex-row align-items-center">
-              <Card.Body className="d-flex justify-content-between align-items-center w-100">
-                <div>
-                  <Card.Title>{post.title}</Card.Title>
-                  <div className="d-flex flex-column">
-                    <div className="d-flex">
-                      <strong>Author:</strong>
-                      <span className="ml-2">{post.authorName}</span>
+          <Col key={post._id} md={12} className="d-flex d-sm-flex justify-content-around mb-4 w-100">
+            <Card  style={{ width: '100%', height: 'auto' }} className='border-0 shadow pe-auto'>
+              <div className='d-lg-flex p-3'>
+                <Card.Img className='rounded-3 c-w-100 my-3 my-lg-0' style={{ width: '20%' }} variant="top" src="https://th.bing.com/th/id/OIP.au547IWsqSQUkUwyd7LHZAHaEK?rs=1&pid=ImgDetMain" />
+                <Card.Body className="p-0 px-lg-3 d-flex justify-content-between align-items-center w-100">
+                  <div className='w-100'>
+                    <div className='d-flex justify-content-between'>
+                      <Card.Title className='fs-3 fw-semibold'>{post.title}</Card.Title>
+                      <div>
+
+                        <Link to={`/edit-post/${post._id}`} className="m-3">
+                          <FaEdit size={20} className="text-primary" />
+                        </Link>
+
+                        <FaTrash
+                          size={20}
+                          className="text-danger"
+                          onClick={() => handleDelete(post._id)}
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </div>
                     </div>
-                    <div className="d-flex">
-                      <strong>Category:</strong>
-                      <span className="ml-2">{post.categoryName}</span>
+
+                    <div class="row">
+                      <strong class="col-3 col-lg-2 text-nowrap">Author:</strong>
+                      <div class="col-9 col-lg-10 text-nowrap">{post.authorName}</div>
                     </div>
-                    <div className="d-flex">
-                      <strong>Created At:</strong>
-                      <span className="ml-2">{new Date(post.createdAt).toLocaleString()}</span>
+                    <div class="row">
+                      <strong class="col-3 col-lg-2 text-nowrap">Category:</strong>
+                      <div class="col-9 col-lg-10 text-nowrap">{post.categoryName}</div>
                     </div>
-                    <div className="d-flex">
-                      <strong>Updated At:</strong>
-                      <span className="ml-2">{new Date(post.updatedAt).toLocaleString()}</span>
+                    <div class="row">
+                      <strong class="col-3 col-lg-2 text-nowrap">Created At:</strong>
+                      <div class="col-9 col-lg-10 text-nowrap">{new Date(post.createdAt).toLocaleString()}</div>
                     </div>
+                    <div class="row">
+                      <strong class="col-3 col-lg-2 text-nowrap">Updated At:</strong>
+                      <div class="col-9 col-lg-10 text-nowrap">{new Date(post.updatedAt).toLocaleString()}</div>
+                    </div>
+
                   </div>
-                </div>
-                <div>
-                  <Link to={`/edit-post/${post._id}`} className="mr-3">
-                    <FaEdit size={20} className="text-primary" />
-                  </Link>
-                  <FaTrash
-                    size={20}
-                    className="text-danger"
-                    onClick={() => handleDelete(post._id)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                </div>
-              </Card.Body>
+
+                </Card.Body>
+              </div>
             </Card>
           </Col>
         ))}

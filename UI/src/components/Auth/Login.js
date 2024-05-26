@@ -36,9 +36,9 @@ const Login = () => {
   };
 
   return (
-    <Container className="h-auto mt-5">
-      <div className="d-flex justify-content-center h-75">
-      <Col className="bg-primary-subtle p-4 rounded-4 shadow" xs={12} sm={9} md={6} lg={5} xl={4}>
+    <Container className="h-100 mt-5">
+      <div className="d-flex justify-content-center h-auto">
+        <Col className="bg-primary-subtle p-4 rounded-4 shadow" xs={12} sm={9} md={6} lg={5} xl={4}>
           <div className='bg-primary w-100 rounded-4'>
             <img className='w-100 rounded-4' height={100} src='https://th.bing.com/th/id/OIP.iSkNM8_KRUfzBnFuHxmDPgHaBf?rs=1&pid=ImgDetMain'>
             </img>
