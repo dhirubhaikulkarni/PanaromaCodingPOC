@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
+import { checkValueEmptyOrNull } from '../../Utils/utils';
 
 const PostDetails = (props) => {
   const { id } = useParams();
@@ -14,11 +15,16 @@ const PostDetails = (props) => {
   return (
     <div>
       <h2>{post.title}</h2>
-      <p>{post.content}</p>
-      <p>Author: {post.author}</p>
-      <p>Category: {post.category}</p>
-    </div>
-  );
+      <div className="leading-tight whitespace-pre-wrap" dangerouslySetInnerHTML={{
+        __html: post.content.substr(0, 100).replace(
+          /(<? *script)/gi,
+          "illegalscript"
+        ),
+      }}></div>
+        <p>Author: {checkValueEmptyOrNull(post.authorName)}</p>
+        <p>Category: {checkValueEmptyOrNull(post.categoryName)}</p>
+      </div>
+      );
 };
 
-export default PostDetails;
+      export default PostDetails;
