@@ -82,6 +82,33 @@ export const updatePost = (postId, title, content, selectedCategory) => async di
   }
 };
 
+export const deletePost = (ID) => async (dispatch) => {
+  try {
+    await axios.delete(`http://localhost:4000/api/posts/${ID}`)
+      .then((response) => {
+        if (response.status == 200) {
+          dispatch(setSuccess("Post Deleted Successfully"));
+          dispatch(getPosts())
+          const timer = setTimeout(() => {
+            dispatch(setSuccess(null));
+          }, 1000);
+          // Clear timeout if the component is unmounted
+          return () => clearTimeout(timer);
+
+        }
+        else {
+          dispatch(setError('Failed to Delete Post.'));
+        }
+
+      })
+      .catch((error) => {
+        dispatch(setError('Failed to Delete Post.'));
+      });
+  } catch (e) {
+    return console.error(e.message);
+  }
+};
+
 
 const initialState = {
   data: [],

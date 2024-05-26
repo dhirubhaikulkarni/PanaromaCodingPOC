@@ -5,6 +5,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPost, updatePost, getCategories, getPosts } from '../../Store/postManagementSlice';
+import { useNavigate } from 'react-router-dom';
 
 const NewPost = () => {
   const { postId } = useParams();  // Get postId from route params
@@ -15,6 +16,7 @@ const NewPost = () => {
   const [author, setAuthor] = useState('');
   const categories = useSelector(state => state.post.categories);
   const posts = useSelector(state => state.post.data);
+  const navigate = useNavigate();
 
   const loading = useSelector(state => state.post.loading);
   const error = useSelector(state => state.post.error);
@@ -37,11 +39,23 @@ const NewPost = () => {
         setSelectedCategory(post.category);
       }
     }
+    else {
+      setTitle('')
+      setContent('')
+      setSelectedCategory('')
+    }
   }, [dispatch, postId, posts]);
 
-  const handleCategoryChange = (categoryId) => {
-    setSelectedCategory(categoryId);
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
   };
+
+  function previousPage() {
+    setTitle('')
+    setContent('')
+    setSelectedCategory('')
+    navigate("/dashboard/posts")
+  }
 
   const handleSubmit = async (e) => {
     debugger;
@@ -49,103 +63,100 @@ const NewPost = () => {
     if (postId) {
       debugger;
       dispatch(updatePost(postId, title, content, selectedCategory));
-      dispatch(getPosts()); 
+      dispatch(getPosts());
     } else {
       dispatch(addPost(title, content, selectedCategory));
-      dispatch(getPosts()); 
+      dispatch(getPosts());
     }
   };
 
   return (
-    <Container className="mt-4">
-      <Row>
-        <Col>
-          <h2>{postId ? 'Edit Post' : 'Add New Post'}</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          {success && <Alert variant="success">{success}</Alert>}
-          <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formBasicTitle" className="mb-3">
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </Form.Group>
+    <Container className="py-4 h-100">
+      <div className='px-4 pt-3 pb-4 rounded-4 shadow'>
+        <h2>{postId ? 'Edit Post' : 'Add New Post'}</h2>
+        {error && <Alert variant="danger">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
 
-            <Form.Group controlId="formBasicContent" className="mb-5">
-              <Form.Label>Content</Form.Label>
-              <ReactQuill
-                className="quill-editor"
-                value={content}
-                onChange={setContent}
-                modules={{
-                  toolbar: [
-                    [{ header: '1' }, { header: '2' }, { font: [] }],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ align: [] }],
-                    ['link', 'image'],
-                    ['clean'],
-                  ],
-                }}
-                formats={[
-                  'header',
-                  'font',
-                  'size',
-                  'bold',
-                  'italic',
-                  'underline',
-                  'strike',
-                  'blockquote',
-                  'list',
-                  'bullet',
-                  'indent',
-                  'link',
-                  'image',
-                  'align',
-                ]}
-                placeholder="Write your content here..."
-                style={{ height: '200px', marginBottom: '20px' }}
-              />
-            </Form.Group>
+        <Form onSubmit={handleSubmit}>
 
-            <Form.Group controlId="formBasicCategories" className="mb-3">
-              <Form.Label>Categories</Form.Label>
-              <Row>
-                {categories.map(category => (
-                  <Col xs={6} key={category._id}>
-                    <Form.Check
-                      type="radio"
-                      label={category.name}
-                      name="category"
-                      value={category._id}
-                      checked={selectedCategory === category._id}
-                      onChange={() => handleCategoryChange(category._id)}
-                    />
-                  </Col>
-                ))}
-              </Row>
-            </Form.Group>
+          <div className="row">
+            <div className="col-12 col-md-8">
+              <Form.Group controlId="formBasicTitle" className="mt-3">
+                <Form.Control
+                  type="text"
+                  placeholder="Enter title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </Form.Group>
+            </div>
 
-            <Form.Group controlId="formBasicAuthor" className="mb-3">
-              <Form.Label>Author</Form.Label>
-              <Form.Control
-                type="text"
-                value={author}
-                readOnly
-              />
-            </Form.Group>
+            <div className="col-12 col-md-4">
+              <Form.Group controlId="formBasicCategories" className="mt-3">
+                <Form.Select id="exampleSelect" value={selectedCategory} onChange={handleCategoryChange}>
+                  <option value="" disabled>Select an option</option>
+                  {categories.map(category => (
+                    <option key={category._id} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </div>
+          </div>
 
-            <Button variant="primary" type="submit" disabled={loading}>
+          <Form.Group controlId="formBasicContent" className="mt-3">
+            <ReactQuill
+              className="quill-editor"
+              value={content}
+              onChange={setContent}
+              modules={{
+                toolbar: [
+                  [{ header: '1' }, { header: '2' }, { font: [] }],
+                  [{ list: 'ordered' }, { list: 'bullet' }],
+                  ['bold', 'italic', 'underline', 'strike'],
+                  [{ align: [] }],
+                  ['link', 'image'],
+                  ['clean'],
+                ],
+              }}
+              formats={[
+                'header',
+                'font',
+                'size',
+                'bold',
+                'italic',
+                'underline',
+                'strike',
+                'blockquote',
+                'list',
+                'bullet',
+                'indent',
+                'link',
+                'image',
+                'align',
+              ]}
+              placeholder="Write your content here..."
+              style={{ height: 'auto', marginBottom: '20px' }}
+            />
+          </Form.Group>
+
+          <div className='d-flex justify-content-end'>
+
+            <Button onClick={previousPage} variant="secondary" type="submit" className="mt-3 px-5 mx-3 rounded-pill">
+              Cancel
+            </Button>
+
+            <Button variant="primary" type="submit" className="mt-3 px-5 rounded-pill">
               {loading ? <Spinner animation="border" size="sm" /> : postId ? 'Update Post' : 'Add Post'}
             </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+          </div>
+
+        </Form>
+      </div >
+
+    </Container >
   );
 };
 

@@ -26,9 +26,9 @@ const Dashboard = () => {
             <Nav.Link as={Link} to="/dashboard/add-post">
               <FaPlus /> Add New Post
             </Nav.Link>
-            <Nav.Link as={Link} to="/dashboard/category">
+            {/* <Nav.Link as={Link} to="/dashboard/category">
               <FaPlus /> Category
-            </Nav.Link>
+            </Nav.Link> */}
             <Nav.Link as={Link} to="/dashboard/profile">
               <FaUser /> Profile
             </Nav.Link>
@@ -36,10 +36,11 @@ const Dashboard = () => {
         </Col>
         <Col xs={10} className="content-area">
           <Routes>
+          <Route path="/" element={<AllPosts />} />
           <Route path="posts" element={<AllPosts />} />
             <Route path="add-post" element={<NewPost />} />
             <Route path="add-post/:postId" element={<NewPost />} />
-            <Route path="category" element={<Category />} />
+            {/* <Route path="category" element={<Category />} /> */}
             <Route path="profile" element={<Profile />} />
           </Routes>
         </Col>

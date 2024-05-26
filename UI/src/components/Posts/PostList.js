@@ -44,7 +44,7 @@ const PostList = (props) => {
     }
 
     return (
-      <Pagination>
+      <Pagination className="d-flex justify-content-end">
         <Pagination.Prev
           disabled={currentPage === 1}
           onClick={() => paginate(currentPage - 1)}
@@ -61,6 +61,7 @@ const PostList = (props) => {
   return (
     <Container className="pt-4">
       <Row>
+        {renderPagination()}
         {currentPosts.map((post) => (
           <Col key={post._id} sm={12} md={6} lg={4} className="d-flex justify-content-around mb-4">
             <Link to={`/post/${post._id}`} style={{ textDecoration: 'none' }}>
@@ -73,13 +74,13 @@ const PostList = (props) => {
 
                   <div class="col d-flex flex-column justify-content-between">
 
-                    <div class="col align-self-start">
-                      <div className="leading-tight whitespace-pre-wrap" dangerouslySetInnerHTML={{
-                        __html: post.content.substr(0, 100).replace(
-                          /(<? *script)/gi,
-                          "illegalscript"
-                        )
-                      }}>
+                    <div className="col align-self-start">
+                      <div className="leading-tight whitespace-pre-wrap"
+                        dangerouslySetInnerHTML={{
+                          __html: post.content.length > 100
+                            ? post.content.substr(0, 100).replace(/(<? *script)/gi, "illegalscript") + '... <span class="text-primary cursor-pointer">more</span>'
+                            : post.content.replace(/(<? *script)/gi, "illegalscript")
+                        }}>
                       </div>
                     </div>
 
@@ -104,7 +105,7 @@ const PostList = (props) => {
         ))}
       </Row>
 
-      {renderPagination()}
+
     </Container>
   );
 };

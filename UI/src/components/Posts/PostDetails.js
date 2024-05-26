@@ -6,11 +6,21 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
+import { useNavigate } from 'react-router-dom';
+
 
 const PostDetails = (props) => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const posts = useSelector((state) => state.post.data);
+  
   const post = posts.find((p) => p._id === id);
+
+
+  function homePage (){
+    navigate("/")
+  }
 
   if (!post) {
     return <div>Post not found</div>;
@@ -18,6 +28,10 @@ const PostDetails = (props) => {
 
   return (
     <Container className="h-100 py-4">
+
+      <div className='text-white d-flex justify-content-start border border-white '>
+        <button onClick={homePage} className='btn btn-primary rounded-pill px-3'>Back</button>
+      </div>
 
       <div>
         <h2>{post.title}</h2>
@@ -70,7 +84,7 @@ const PostDetails = (props) => {
 
       <div>
         <div className="leading-tight whitespace-pre-wrap" dangerouslySetInnerHTML={{
-          __html: post.content.substr(0, 100).replace(
+          __html: post.content.replace(
             /(<? *script)/gi,
             "illegalscript"
           ),

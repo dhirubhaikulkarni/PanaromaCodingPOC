@@ -23,6 +23,11 @@ export const Header = () => {
     navigate("/")
   };
 
+  const handleDasboard = () => {
+    
+    navigate("/dashboard")
+  };
+
 
   return (
     <Navbar expand="lg" className='bg-primary px-4'>
@@ -35,6 +40,11 @@ export const Header = () => {
         <Nav className="ml-auto">
           {user ? (
             <>
+              <Nav.Link onClick={handleDasboard}>
+                <div className='text-white d-flex justify-content-center border border-white rounded-pill px-3 py-2'>
+                  Dashboard
+                </div>
+              </Nav.Link>
               <Nav.Link onClick={handleLogout}>
                 <div className='text-white d-flex justify-content-center border border-white rounded-pill px-3 py-2'>
                   Logout

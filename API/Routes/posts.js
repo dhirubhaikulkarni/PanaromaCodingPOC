@@ -132,7 +132,6 @@ router.get("/getPOstDetails", async (req, res) => {
 
 
 router.delete("/:_id", async (req, res) => {
-
     try {
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
@@ -148,9 +147,6 @@ router.delete("/:_id", async (req, res) => {
 
     catch (error) {
         return res.status(500).send(encrypt(JSON.stringify({ data: { message: error.message } })));
-    }
-    finally {
-        await dbConnection.close();
     }
 });
 
