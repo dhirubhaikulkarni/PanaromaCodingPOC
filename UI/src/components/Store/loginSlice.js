@@ -6,10 +6,10 @@ export const history = createBrowserHistory();
 
 
 export const registerUser = (username, email, password, firstName, lastName) => async dispatch => {
-    debugger;
+     
     try {
         setLoading(true)
-        await axios.post('http://localhost:4000/api/users/register', {
+        await axios.post(`${process.env.REACT_APP_API_URL}/users/register`, {
             username,
             email,
             password,
@@ -39,10 +39,10 @@ export const registerUser = (username, email, password, firstName, lastName) => 
 
 };
 export const loginUser = (email, password) => async dispatch => {
-    debugger;
+     
     try {
         dispatch(setLoading(true))
-        await axios.post('http://localhost:4000/api/users/login', { email, password })
+        await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, { email, password })
             .then(response => {
                 if (response.data.error) {
                     dispatch(response.data.error.message)

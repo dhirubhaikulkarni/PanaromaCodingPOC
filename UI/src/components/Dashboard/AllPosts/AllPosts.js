@@ -16,7 +16,6 @@ const AllPosts = () => {
   const posts = useSelector(state => state.post.data);
   const user = useSelector(state => state.user.user);
   const success = useSelector((state) => state.post.success);
-  console.log("user", user);
 
   useEffect(() => {
     dispatch(getPosts());
@@ -24,15 +23,13 @@ const AllPosts = () => {
 
 
   const handleDelete = async (postId) => {
-    debugger;
+     
     setOpen(true);
     setRemoveID(postId);
 
   };
 
   const handleClose = (newValue) => {
-    debugger;
-    console.log(removeID)
     setOpen(false);
     if (newValue) {
       dispatch(deletePost(removeID));

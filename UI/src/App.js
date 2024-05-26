@@ -13,6 +13,7 @@ import Signup from './components/Auth/Signup';
 import { Provider } from 'react-redux';
 import rootReducers from './components/Store/rootReducers'
 
+
 function App() {
 
   const [posts, setPosts] = useState([]);
@@ -20,16 +21,14 @@ function App() {
 
 
   axios.interceptors.request.use((req) => {
-    debugger;
-    console.log("Api call",localStorage.getItem('jwt_token'))
+     
     req.headers['Authorization'] = `Bearer ${localStorage.getItem('jwt_token')}`;
     req.headers['Content-Type'] = 'application/json';
     return req;
   });
-  
-  
+
+
   axios.interceptors.response.use(response => {
-    console.log("Response Call")
     if (localStorage.getItem('jwt_token') !== null && localStorage.getItem('jwt_token') !== undefined) {
       if (response.headers.hasOwnProperty("authorization")) {
         const validToken = response.headers.authorization;
@@ -42,11 +41,13 @@ function App() {
       }
     }
     return response;
-  
+
   }, error => {
     if (error.response.status === 401) {
-      // window.location = `${window.location.origin}`;
-  
+      window.location = `${window.location.origin}`;
+      localStorage.removeItem('jwt_token')
+
+
     }
     return error;
   });
@@ -55,7 +56,7 @@ function App() {
   return (
     <Provider store={rootReducers}>
       <Router>
-        <div className="App" style={{height:'100%'}}>
+        <div className="App" style={{ height: '100%' }}>
           <Header />
 
           <Routes>
@@ -75,62 +76,3 @@ function App() {
 }
 
 export default App;
-
-// import React, { useState, useEffect } from 'react';
-// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// import axios from 'axios';
-// import { Header } from './components/Header';
-// import Footer from './components/Footer';
-
-// import { Container, Spinner } from 'react-bootstrap';
-// import PostList from './components/Posts/PostList';
-// import PostDetails from './components/Posts/PostDetails';
-// import Login from './components/Auth/Login';
-// import Signup from './components/Auth/Signup';
-// import Dashboard from './components/Dashboard/Dashboard';
-
-// function App() {
-//   const [posts, setPosts] = useState([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchPosts = async () => {
-//       try {
-//         const response = await axios.get('http://localhost:4000/api/posts');
-//         setPosts(response.data);
-//         setLoading(false);
-//       } catch (error) {
-//         console.error('Error fetching posts:', error);
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchPosts();
-//   }, []);
-
-//   return (
-//     <Router>
-//       <div className="App">
-//         <Header />
-//         <Container className="content">
-//           {loading ? (
-//             <Spinner animation="border" role="status">
-//               <span className="sr-only"></span>
-//             </Spinner>
-//           ) : (
-//             <Routes>
-//               <Route path="/" element={<PostList posts={posts} />} />
-//               <Route path="/post/:id" element={<PostDetails posts={posts} />} />
-//               <Route path="/login" element={<Login />} />
-//               <Route path="/signup" element={<Signup />} />
-//               <Route path="/dashboard" element={<Dashboard />} />
-//             </Routes>
-//           )}
-//         </Container>
-//         <Footer />
-//       </div>
-//     </Router>
-//   );
-// }
-
-// export default App;

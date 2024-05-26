@@ -18,7 +18,6 @@ const PostList = (props) => {
   }, [dispatch]);
 
   const posts = useSelector((state) => state.post.data);
-  console.log(posts)
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 9; // Number of posts per page
   const indexOfLastPost = currentPage * postsPerPage;

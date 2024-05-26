@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
 export const getPosts = () => async dispatch => {
-  await axios.get('http://localhost:4000/api/posts')
+  await axios.get(`${process.env.REACT_APP_API_URL}/posts`)
     .then(response => {
       dispatch(setPost(response.data))
     }).catch((e) => {
@@ -12,7 +12,7 @@ export const getPosts = () => async dispatch => {
 
 };
 export const getCategories = () => async dispatch => {
-  await axios.get('http://localhost:4000/api/categories')
+  await axios.get(`${process.env.REACT_APP_API_URL}/categories`)
     .then(response => {
       dispatch(setCategories(response.data.filter(category => category.isActive)))
     }).catch((e) => {
@@ -22,10 +22,10 @@ export const getCategories = () => async dispatch => {
 };
 
 export const addPost = (title, content, selectedCategory) => async dispatch => {
-  debugger;
+   
   try {
     setLoading(true)
-    await axios.post('http://localhost:4000/api/posts/addPost', {
+    await axios.post(`${process.env.REACT_APP_API_URL}/posts/addPost`, {
       title,
       content,
       author: JSON.parse(localStorage.getItem('user'))._id,
@@ -57,7 +57,7 @@ export const addPost = (title, content, selectedCategory) => async dispatch => {
 export const updatePost = (postId, title, content, selectedCategory) => async dispatch => {
   try {
     dispatch(setLoading(true));
-    await axios.put(`http://localhost:4000/api/posts/editPost/${postId}`, {
+    await axios.put(`${process.env.REACT_APP_API_URL}/posts/editPost/${postId}`, {
       title,
       content,
       selectedCategory
@@ -84,7 +84,7 @@ export const updatePost = (postId, title, content, selectedCategory) => async di
 
 export const deletePost = (ID) => async (dispatch) => {
   try {
-    await axios.delete(`http://localhost:4000/api/posts/${ID}`)
+    await axios.delete(`${process.env.REACT_APP_API_URL}/posts/${ID}`)
       .then((response) => {
         if (response.status == 200) {
           dispatch(setSuccess("Post Deleted Successfully"));

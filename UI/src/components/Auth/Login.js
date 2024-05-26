@@ -20,14 +20,12 @@ const Login = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:4000/api/users/login', { email, password });
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, { email, password });
       if (response.data.error) {
         setError(response.data.error.message);
       } else {
-        console.log("set user");
         localStorage.setItem('user', JSON.stringify(response.data.user));
         localStorage.setItem('jwt_token', JSON.stringify(response.data.token));
-        //dispatch(SetUser(response.data));
         setError(null);
         navigate('/dashboard');
       }

@@ -32,7 +32,6 @@ const NewPost = () => {
 
     if (postId && posts.length > 0) {
       const post = posts.find(post => post._id === postId);
-      console.log("post", post);
       if (post) {
         setTitle(post.title);
         setContent(post.content);
@@ -58,10 +57,10 @@ const NewPost = () => {
   }
 
   const handleSubmit = async (e) => {
-    debugger;
+     
     e.preventDefault();
     if (postId) {
-      debugger;
+       
       dispatch(updatePost(postId, title, content, selectedCategory));
       dispatch(getPosts());
     } else {
