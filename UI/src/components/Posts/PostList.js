@@ -7,6 +7,7 @@ import Card from 'react-bootstrap/Card';
 import Pagination from 'react-bootstrap/Pagination';
 import { getPosts } from '../Store/postManagementSlice';
 import { useDispatch, useSelector } from "react-redux";
+import { checkValueEmptyOrNull } from '../../Utils/utils';
 
 const PostList = (props) => {
 
@@ -17,6 +18,7 @@ const PostList = (props) => {
   }, []);
 
   const posts = useSelector((state) => state.post.data);
+  console.log(posts)
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 9; // Number of posts per page
   const indexOfLastPost = currentPage * postsPerPage;
@@ -70,7 +72,7 @@ const PostList = (props) => {
                 <footer className="blockquote-footer">
                   <cite title="Source Title">
                     {/* Author: {post.author.username} | Category: {post.category.name} */}
-                    Author: {post.author} | Category: {post.category}
+                    Author: {checkValueEmptyOrNull(post.authorName)} | Category: {checkValueEmptyOrNull(post.categoryName)}
                   </cite>
                 </footer>
               </Card.Body>

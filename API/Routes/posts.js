@@ -12,11 +12,12 @@ router.post("/addPost", async (req, res) => {
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
         const Posts = await db.collection("Posts");
+
         const post = {
             title: req.body.title,
             content: req.body.content,
-            author: req.body.author,
-            categoryId: req.body.categoryId,
+            author: new ObjectID(req.body.author),
+            category: new ObjectID(req.body.categoryId),
             createdAt: new Date()
         };
 
@@ -34,7 +35,7 @@ router.post("/editPost", async (req, res) => {
 
         // Validate Request
         if (!req.body) {
-            return res.status(400).send(JSON.stringify({ message: "Data Can not be Empty"}));
+            return res.status(400).send(JSON.stringify({ message: "Data Can not be Empty" }));
         }
 
         await Posts.updateOne({ _id: new ObjectID(req.body._id) },
@@ -42,8 +43,8 @@ router.post("/editPost", async (req, res) => {
                 $set: {
                     title: req.body.title,
                     content: req.body.content,
-                    author: req.body.author,
-                    categoryId: req.body.categoryId,
+                    author: new ObjectID(req.body.author),
+                    categoryId: new ObjectID(req.body.categoryId),
                     updatedAt: new Date()
 
                 }
@@ -60,22 +61,68 @@ router.post("/editPost", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
+
     try {
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
-        const posts = await db.collection("Posts");
-        const Posts = await posts.find().toArray();
-        if (Posts != null) {
-            res.status(200).send(JSON.stringify(Posts));
+        const aggregatedPosts = await db.collection("Posts").aggregate([
+            {
+                $lookup: {
+                    from: "Users",
+                    localField: "author",
+                    foreignField: "_id",
+                    as: "authorDetails"
+                }
+            },
+            {
+                $unwind: "$authorDetails"
+            },
+            {
+                $lookup: {
+                    from: "categories",
+                    localField: "category",
+                    foreignField: "_id",
+                    as: "categoryDetails"
+                }
+            },
+            {
+                $unwind: "$categoryDetails"
+            },
+            {
+                $project: {
+                    title: 1,
+                    content: 1,
+                    authorName: { $concat: ["$authorDetails.firstName", " ", "$authorDetails.lastName"] },
+                    categoryName: "$categoryDetails.name",
+                    author: 1,
+                    category:1,
+                    createdAt: 1,
+                    updatedAt: 1
+                }
+            }
+        ]).toArray();
+        if (aggregatedPosts != null) {
+            res.status(200).send(JSON.stringify(aggregatedPosts));
         }
         else {
             res.status(500).send(JSON.stringify({ message: "no record found" }));
         }
+
+
     }
     catch (error) {
         return res.status(500).send(JSON.stringify({ message: error.message }));
     }
+
+
+
 });
+
+router.get("/getPOstDetails", async (req, res) => {
+
+});
+
+
 
 router.delete("/:_id", async (req, res) => {
 
@@ -88,7 +135,7 @@ router.delete("/:_id", async (req, res) => {
         if (!result) {
             return res.status(500).send(JSON.stringify({ data: { message: error.message } }));
         } else {
-            return res.status(200).send(JSON.stringify({ "message": "Post Deleted Successfully"}));
+            return res.status(200).send(JSON.stringify({ "message": "Post Deleted Successfully" }));
         }
     }
 
@@ -100,7 +147,9 @@ router.delete("/:_id", async (req, res) => {
     }
 });
 
+router.post("/addPost", async (req, res) => {
 
+});
 
 
 module.exports = router;
