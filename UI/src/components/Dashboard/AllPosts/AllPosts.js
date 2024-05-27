@@ -7,10 +7,12 @@ import axios from 'axios';
 import { deletePost, getPosts } from '../../Store/postManagementSlice';
 import '../AllPosts/AllPost.css';
 import ConfirmationDialog from '../../Dialog/ConfirmationDialog';
+import useAuth from '../../Auth/useAuth';
 
 
 const AllPosts = () => {
   const dispatch = useDispatch();
+  const userauth = useAuth();
   const [open, setOpen] = React.useState(false);
   const [removeID, setRemoveID] = React.useState(null);
   const posts = useSelector(state => state.post.data);
@@ -78,12 +80,14 @@ const AllPosts = () => {
                           >
                             <FaEdit size={20} className="text-primary" />
                           </Link>
-                          <FaTrash
-                            size={20}
-                            className="text-danger"
-                            onClick={() => handleDelete(post._id)}
-                            style={{ cursor: 'pointer' }}
-                          />
+                          {userauth.role === 'admin' &&
+                            <FaTrash
+                              size={20}
+                              className="text-danger"
+                              onClick={() => handleDelete(post._id)}
+                              style={{ cursor: 'pointer' }}
+                            />
+                          }
                         </div>
                       </div>
                       <div className="row">
