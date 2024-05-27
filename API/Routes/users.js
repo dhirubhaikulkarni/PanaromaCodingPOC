@@ -196,6 +196,25 @@ router.post("/resetpassword", async (req, res) => {
     }
 });
 
+router.get("/getUsers", async (req, res) => {
+    try {
+        const dbConnection = await global.clientConnection;
+        const db = await dbConnection.db("PanaromaCodeChallenge");
+        const users = await db.collection("Users");
+        const user = await users.find().sort({ _id: -1 }).toArray();
+        if (user != null) {
+            res.status(200).send(JSON.stringify(user));
+        }
+        else {
+            res.status(500).send(JSON.stringify({ message: "no record found" }));
+        }
+    }
+    catch (error) {
+        return res.status(500).send(JSON.stringify({ message: error.message }));
+    }
+});
+
+
 
 
 

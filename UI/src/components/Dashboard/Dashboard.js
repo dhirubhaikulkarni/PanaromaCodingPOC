@@ -1,12 +1,13 @@
 import React from 'react';
 import { Route, Routes, Link } from 'react-router-dom';
 import { Container, Row, Col, Nav } from 'react-bootstrap';
-import { FaList, FaPlus, FaUser } from 'react-icons/fa';
+import { FaList, FaPlus, FaUser, FaUsers } from 'react-icons/fa';
 
 import useAuth from '../Auth/useAuth';
 import Profile from './Profile/Profile';
 import AllPosts from './AllPosts/AllPosts';
-import  NewPost  from './NewPost/NewPost';
+import NewPost from './NewPost/NewPost';
+import Users from './Users/Users';
 import Category from './Category/Category';
 
 const Dashboard = () => {
@@ -26,6 +27,9 @@ const Dashboard = () => {
             <Nav.Link as={Link} to="/dashboard/add-post">
               <FaPlus /> Add New Post
             </Nav.Link>
+            <Nav.Link as={Link} to="/dashboard/users">
+              <FaUsers /> Users
+            </Nav.Link>
             {/* <Nav.Link as={Link} to="/dashboard/category">
               <FaPlus /> Category
             </Nav.Link> */}
@@ -36,12 +40,13 @@ const Dashboard = () => {
         </Col>
         <Col xs={10} className="content-area">
           <Routes>
-          <Route path="/" element={<AllPosts />} />
-          <Route path="posts" element={<AllPosts />} />
+            <Route path="/" element={<AllPosts />} />
+            <Route path="posts" element={<AllPosts />} />
             <Route path="add-post" element={<NewPost />} />
             <Route path="add-post/:postId" element={<NewPost />} />
             {/* <Route path="category" element={<Category />} /> */}
             <Route path="profile" element={<Profile />} />
+            <Route path="users" element={<Users />} />
           </Routes>
         </Col>
       </Row>
