@@ -69,8 +69,8 @@ const Login = () => {
               </Button>
             </div>
             <hr className='w-100'></hr>
-            <a className='d-flex justify-content-center mt-2' href='#'>
-              Forgot password?
+            <a className='d-flex justify-content-center mt-2' href='/resetPassword'>
+              Reset password
             </a>
 
             <div className='d-flex justify-content-center'>

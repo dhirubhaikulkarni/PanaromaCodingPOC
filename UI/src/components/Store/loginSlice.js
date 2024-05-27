@@ -6,7 +6,7 @@ export const history = createBrowserHistory();
 
 
 export const registerUser = (username, email, password, firstName, lastName) => async dispatch => {
-     
+
     try {
         setLoading(true)
         await axios.post(`${process.env.REACT_APP_API_URL}/users/register`, {
@@ -39,7 +39,7 @@ export const registerUser = (username, email, password, firstName, lastName) => 
 
 };
 export const loginUser = (email, password) => async dispatch => {
-     
+
     try {
         dispatch(setLoading(true))
         await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, { email, password })
@@ -48,11 +48,11 @@ export const loginUser = (email, password) => async dispatch => {
                     dispatch(response.data.error.message)
                 }
                 else {
-                    
+
                     localStorage.setItem('user', JSON.stringify(response.data));
                     dispatch(setError(null));
                     history.push('/dashboard'); // Redirect using history
-                  }
+                }
             }).catch((error) => {
                 dispatch(setLoading(false))
                 dispatch(setError('Login failed, please try again'));
@@ -66,11 +66,43 @@ export const loginUser = (email, password) => async dispatch => {
 
 };
 
+export const resetPassword = (email, password, previousPassword) => async dispatch => {
+    try {
+        setLoading(true)
+        await axios.post(`${process.env.REACT_APP_API_URL}/users/resetpassword`, {
+            email,
+            password,
+            previousPassword,
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    dispatch(setLoading(false))
+                    dispatch(setSuccess('Password Reset successfully!'));
+
+                }
+                else {
+                    dispatch(setLoading(false))
+                    dispatch(setSuccess(response.data));
+                }
+
+            }).catch((error) => {
+                dispatch(setLoading(false))
+                dispatch(setError('Failed to reset password.'));
+            })
+
+    } catch (error) {
+        dispatch(setLoading(false))
+        dispatch(setError('Failed to reset password.'));
+    }
+
+
+
+};
 
 
 const initialState = {
     data: [],
-    success: "",
+    success: null,
     error: "",
     loading: false
 

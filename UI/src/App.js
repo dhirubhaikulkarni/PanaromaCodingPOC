@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PostDetails from './components/Posts/PostDetails';
 import Login from './components/Auth/Login';
 import Dashboard from './components/Dashboard/Dashboard';
+import ResetPassword from './components/Auth/ResetPassword';
 import Signup from './components/Auth/Signup';
 import { Provider } from 'react-redux';
 import rootReducers from './components/Store/rootReducers'
@@ -21,7 +22,7 @@ function App() {
 
 
   axios.interceptors.request.use((req) => {
-     
+
     req.headers['Authorization'] = `Bearer ${localStorage.getItem('jwt_token')}`;
     req.headers['Content-Type'] = 'application/json';
     return req;
@@ -66,6 +67,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard/posts" element={<Dashboard />} />
             <Route path="/dashboard/*" element={<Dashboard />} />
+            <Route path="/resetPassword" element={<ResetPassword />} />
           </Routes>
 
           {/* <Footer /> */}

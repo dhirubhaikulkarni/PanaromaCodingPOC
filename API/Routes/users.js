@@ -53,6 +53,7 @@ router.post("/register", async (req, res) => {
         const hashPassword = await bcrypt.hash(req.body.password, salt);
         const user = {
             username: req.body.username,
+            salt: salt,
             password: hashPassword,
             email: req.body.email,
             role: "author",
@@ -155,6 +156,43 @@ router.get("/", async (req, res) => {
     }
     catch (error) {
         return res.status(500).send(JSON.stringify({ message: error.message }));
+    }
+});
+
+
+router.post("/resetpassword", async (req, res) => {
+    try {
+        const dbConnection = await global.clientConnection;
+        const db = await dbConnection.db("PanaromaCodeChallenge");
+        const users = await db.collection("Users");
+
+        const currentSalt = await bcrypt.genSalt(10);
+        const currentHashPassword = await bcrypt.hash(req.body.password, currentSalt);
+        // Check if user with provided email exists
+        const existingEmailUser = await users.findOne({ email: req.body.email });
+        if (existingEmailUser == null) {
+            return res.status(400).send("Email is already registered.");
+        }
+        const hashPassword = await bcrypt.hash(req.body.previousPassword, existingEmailUser.salt);
+
+        // Check if user with provided username exists
+        if (existingEmailUser.password != hashPassword) {
+            return res.status(400).send("Old Password Not matched.");
+        }
+
+
+        await users.updateOne({ email: req.body.email },
+            {
+                $set: {
+                    salt: currentSalt,
+                    password: currentHashPassword,
+                }
+            })
+
+        res.status(200).send("Success");
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Failed");
     }
 });
 
