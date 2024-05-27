@@ -79,7 +79,7 @@ const Users = () => {
 
     return (
         <div className="my-4 mx-3 h-auto">
-            {renderPagination()}
+
             <table className='table table-striped table-hover'>
                 <thead>
                     <tr>
@@ -122,6 +122,7 @@ const Users = () => {
                 text="Are You Sure You Want to Delete this user?"
                 onClose={handleClose}
             />
+            {renderPagination()}
         </div>
     );
 };

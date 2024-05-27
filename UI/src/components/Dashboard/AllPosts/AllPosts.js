@@ -23,7 +23,7 @@ const AllPosts = () => {
 
 
   const handleDelete = async (postId) => {
-     
+
     setOpen(true);
     setRemoveID(postId);
 
@@ -104,12 +104,14 @@ const AllPosts = () => {
                           {new Date(post.createdAt).toLocaleString()}
                         </div>
                       </div>
-                      <div className="row">
-                        <strong className="col-3 col-lg-2 text-nowrap">Updated At:</strong>
-                        <div className="col-9 col-lg-10 text-nowrap">
-                          {new Date(post.updatedAt).toLocaleString()}
+                      {post.updatedAt &&
+                        <div className="row">
+                          <strong className="col-3 col-lg-2 text-nowrap">Updated At:</strong>
+                          <div className="col-9 col-lg-10 text-nowrap">
+                            {new Date(post.updatedAt).toLocaleString()}
+                          </div>
                         </div>
-                      </div>
+                      }
                     </div>
                   </Card.Body>
                 </div>

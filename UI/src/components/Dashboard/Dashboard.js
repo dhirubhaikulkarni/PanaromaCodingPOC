@@ -28,9 +28,11 @@ const Dashboard = () => {
             <Nav.Link as={Link} to="/dashboard/add-post">
               <FaPlus /> Add New Post
             </Nav.Link>
-            <Nav.Link as={Link} to="/dashboard/users">
-              <FaUsers /> Users
-            </Nav.Link>
+            {user.role === 'admin' &&
+              <Nav.Link as={Link} to="/dashboard/users">
+                <FaUsers /> Users
+              </Nav.Link>
+            }
             {/* <Nav.Link as={Link} to="/dashboard/category">
               <FaPlus /> Category
             </Nav.Link> */}
