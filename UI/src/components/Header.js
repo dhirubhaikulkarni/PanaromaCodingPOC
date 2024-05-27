@@ -18,13 +18,14 @@ export const Header = () => {
   const handleLogout = () => {
     // Clear local storage
     localStorage.removeItem('user');
+    localStorage.removeItem('jwt_token');
     // Dispatch action to reset user state
     dispatch(ResetUser());
     navigate("/")
   };
 
   const handleDasboard = () => {
-    
+
     navigate("/dashboard")
   };
 

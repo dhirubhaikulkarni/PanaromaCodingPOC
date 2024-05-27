@@ -77,7 +77,7 @@ const Users = () => {
                             <td>
                                 <div>
                                     <Link
-                                        // to={`/dashboard/add-post/${user._id}`}
+                                        to={`/dashboard/users/${user._id}`} 
                                         className="mx-3">
                                         <FaEdit size={20} className="text-primary" />
                                     </Link>

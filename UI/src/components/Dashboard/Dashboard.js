@@ -9,6 +9,7 @@ import AllPosts from './AllPosts/AllPosts';
 import NewPost from './NewPost/NewPost';
 import Users from './Users/Users';
 import Category from './Category/Category';
+import UserEdit from './Users/UserEdit';
 
 const Dashboard = () => {
   const user = useAuth();
@@ -47,6 +48,7 @@ const Dashboard = () => {
             {/* <Route path="category" element={<Category />} /> */}
             <Route path="profile" element={<Profile />} />
             <Route path="users" element={<Users />} />
+            <Route path="users/:userId" element={<UserEdit />} />
           </Routes>
         </Col>
       </Row>

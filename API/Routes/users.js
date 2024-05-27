@@ -86,11 +86,11 @@ router.post("/userEdit", async (req, res) => {
                     firstName: req.body.firstName,
                     lastName: req.body.lastName,
                     role: req.body.role,
+                    username: req.body.username,
                     updatedAt: new Date()
 
                 }
             })
-
 
         let newData = await users.findOne({ _id: new ObjectID(req.body._id) })
         return res.status(200).send(JSON.stringify({ newData, "message": "User Updated Successfully" }));

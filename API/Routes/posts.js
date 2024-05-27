@@ -8,7 +8,7 @@ const checkValueEmptyOrNull = (value) => {
 }
 
 
-router.post("/addPost",Authentication, async (req, res) => {
+router.post("/addPost", Authentication, async (req, res) => {
     try {
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
@@ -28,8 +28,9 @@ router.post("/addPost",Authentication, async (req, res) => {
         res.status(500).send("Failed");
     }
 });
-router.put("/editPost/:id",Authentication, async (req, res) => {  
+router.put("/editPost/:id", Authentication, async (req, res) => {
     try {
+
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
         const Posts = db.collection("Posts");
@@ -124,7 +125,7 @@ router.get("/", async (req, res) => {
 });
 
 
-router.delete("/:_id",Authentication, async (req, res) => {
+router.delete("/:_id", Authentication, async (req, res) => {
     try {
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
@@ -143,9 +144,6 @@ router.delete("/:_id",Authentication, async (req, res) => {
     }
 });
 
-router.post("/addPost", async (req, res) => {
-
-});
 
 
 module.exports = router;

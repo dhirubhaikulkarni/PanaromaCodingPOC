@@ -11,8 +11,18 @@ export const getUsers = () => async dispatch => {
 
 };
 
+export const updateUser = (updatedUser) => async dispatch => {
+  await axios.post(`${process.env.REACT_APP_API_URL}/users/userEdit`, updatedUser)
+    .then(response => {
+      dispatch(getUsers()); 
+    }).catch((e) => {
+      console.error('Failed to update user', e);
+    });
+};
+
+
 const initialState = {
-  user: null, // Initialize with null instead of an empty array
+  user: null, 
 };
 
 export const userSlice = createSlice({
