@@ -57,10 +57,10 @@ const NewPost = () => {
   }
 
   const handleSubmit = async (e) => {
-     
+
     e.preventDefault();
     if (postId) {
-       
+
       dispatch(updatePost(postId, title, content, selectedCategory));
       dispatch(getPosts());
     } else {
@@ -143,7 +143,7 @@ const NewPost = () => {
 
           <div className='d-flex justify-content-end'>
 
-            <Button onClick={previousPage} variant="secondary" type="submit" className="mt-3 px-5 mx-3 rounded-pill">
+            <Button onClick={previousPage} variant="secondary" type="button" className="mt-3 px-5 mx-3 rounded-pill">
               Cancel
             </Button>
 

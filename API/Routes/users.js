@@ -2,6 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const ObjectID = require('mongodb').ObjectId;
 const jwt = require("jsonwebtoken");
+const { Authentication } = require("../Authentication/Authentication");
 
 const checkValueEmptyOrNull = (value) => {
     return (value === undefined || value === null || value === "" || value === "NULL" || value === "null") ? false : true;
@@ -69,7 +70,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post("/userEdit", async (req, res) => {
+router.post("/userEdit", Authentication, async (req, res) => {
     try {
         const dbConnection = await global.clientConnection;
         const db = await dbConnection.db("PanaromaCodeChallenge");
@@ -86,7 +87,6 @@ router.post("/userEdit", async (req, res) => {
                     firstName: req.body.firstName,
                     lastName: req.body.lastName,
                     role: req.body.role,
-                    username: req.body.username,
                     updatedAt: new Date()
 
                 }
@@ -214,6 +214,24 @@ router.get("/getUsers", async (req, res) => {
     }
 });
 
+router.delete("/:_id", Authentication, async (req, res) => {
+    try {
+        const dbConnection = await global.clientConnection;
+        const db = await dbConnection.db("PanaromaCodeChallenge");
+        const posts = await db.collection("Users");
+        const result = await posts.deleteOne({ _id: new ObjectID(req.params._id) })
+
+        if (!result) {
+            return res.status(500).send(JSON.stringify({ data: { message: error.message } }));
+        } else {
+            return res.status(200).send(JSON.stringify({ "message": "User Deleted Successfully" }));
+        }
+    }
+
+    catch (error) {
+        return res.status(500).send(encrypt(JSON.stringify({ data: { message: error.message } })));
+    }
+});
 
 
 

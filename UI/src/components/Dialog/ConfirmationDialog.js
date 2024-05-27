@@ -16,7 +16,7 @@ const ConfirmationDialog = (props) => {
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Deletion</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to delete this post?</Modal.Body>
+                <Modal.Body>{props.text}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleCancel}>
                         Cancel

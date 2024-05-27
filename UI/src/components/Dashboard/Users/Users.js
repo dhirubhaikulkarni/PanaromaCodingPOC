@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'react-bootstrap';
-import { getUsers } from '../../Store/userSlice';
+import { deleteUser, getUsers } from '../../Store/userSlice';
 import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import Pagination from 'react-bootstrap/Pagination';
+import ConfirmationDialog from '../../Dialog/ConfirmationDialog';
 
 const Users = () => {
 
     const dispatch = useDispatch();
     const userData = useSelector(state => state.user.userData) ?? [];
-
+    const [open, setOpen] = React.useState(false);
+    const [removeID, setRemoveID] = React.useState(null);
+    const success = useSelector((state) => state.user.success);
     useEffect(() => {
         dispatch(getUsers());
     }, [dispatch]);
@@ -54,6 +57,26 @@ const Users = () => {
         );
     };
 
+    const handleDelete = async (postId) => {
+
+        setOpen(true);
+        setRemoveID(postId);
+
+    };
+
+    const handleClose = (newValue) => {
+        setOpen(false);
+        if (newValue) {
+            dispatch(deleteUser(removeID));
+        }
+    };
+
+    useEffect(() => {
+        if (success) {
+            alert("Post Deleted Successfully")
+        }
+    }, [success]);
+
     return (
         <div className="my-4 mx-3 h-auto">
             {renderPagination()}
@@ -77,14 +100,14 @@ const Users = () => {
                             <td>
                                 <div>
                                     <Link
-                                        to={`/dashboard/users/${user._id}`} 
+                                        to={`/dashboard/users/${user._id}`}
                                         className="mx-3">
                                         <FaEdit size={20} className="text-primary" />
                                     </Link>
                                     <FaTrash
                                         size={20}
                                         className="text-danger"
-                                        // onClick={() => handleDelete(user._id)}                                        
+                                        onClick={() => handleDelete(user._id)}
                                         style={{ cursor: 'pointer' }}
                                     />
                                 </div>
@@ -94,7 +117,11 @@ const Users = () => {
 
                 </tbody>
             </table>
-
+            <ConfirmationDialog
+                open={open}
+                text="Are You Sure You Want to Delete this user?"
+                onClose={handleClose}
+            />
         </div>
     );
 };

@@ -41,6 +41,14 @@ const UserEdit = () => {
 
   if (!user) return <Spinner animation="border" />;
 
+  function previousPage() {
+    setUser('')
+    setFirstName('')
+    setLastName('')
+    setRole('')
+    navigate('/dashboard/users')
+  }
+
   return (
     <Container className="mt-4">
       <Row>
@@ -48,7 +56,7 @@ const UserEdit = () => {
           <h2>Edit User</h2>
           <Form onSubmit={handleSubmit}>
 
-          <Form.Group controlId="formEmail" className="mb-3">
+            <Form.Group controlId="formEmail" className="mb-3">
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
@@ -76,7 +84,7 @@ const UserEdit = () => {
                 required
               />
             </Form.Group>
-           
+
             <Form.Group controlId="formRole" className="mb-3">
               <Form.Label>Role</Form.Label>
               <Form.Select
@@ -88,7 +96,10 @@ const UserEdit = () => {
                 <option value="author">Author</option>
               </Form.Select>
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button onClick={previousPage} variant="secondary" type="button" className="mt-3 px-5 mx-3 rounded-pill">
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" className="mt-3 px-5 mx-3 rounded-pill">
               Update User
             </Button>
           </Form>
